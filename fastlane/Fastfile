@@ -1,3 +1,7 @@
 lane :test do
-  appsigner
+  appsigner(
+      domain: 'https://appsigner.redmadrobot.dev',
+      secret_key: '5bf2bd278b91ce59c8765d22c6d9edd5f32078c418ca3d651e39c474644b545e',
+      apk_path: 'spec/app-debug.apk'
+  )
 end
