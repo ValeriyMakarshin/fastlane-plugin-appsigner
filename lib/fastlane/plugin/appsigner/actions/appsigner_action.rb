@@ -1,11 +1,10 @@
-require 'fastlane/action'
-require_relative '../helper/appsigner_helper'
-
 module Fastlane
   module Actions
     class AppsignerAction < Action
       def self.run(params)
-        uri = URI.parse('%s/api/v1/app/sign/' % params[:signer_url])
+        require 'net/http'
+        require 'uri'
+        uri = URI.parse('%s/api/v1/app/sign/' % params[:domain])
 
         header = {
             'X-SIGNER-SECRET': params[:secret_key],
@@ -41,9 +40,9 @@ module Fastlane
 
       def self.available_options
         [
-            FastlaneCore::ConfigItem.new(key: :signer_url,
-                                         env_name: "APPSIGNER_URL",
-                                         description: "Url of your AppSigner service",
+            FastlaneCore::ConfigItem.new(key: :domain,
+                                         env_name: "APPSIGNER_DOMAIN",
+                                         description: "The domain of your AppSigner service",
                                          optional: false,
                                          type: String,
                                          verify_block: proc do |value|
@@ -69,7 +68,7 @@ module Fastlane
       end
 
       def self.is_supported?(platform)
-        [:android].include?(platform)
+        :android == platform
       end
     end
   end
