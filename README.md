@@ -1,4 +1,4 @@
-# appsigner plugin
+# AppSigner plugin
 
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-appsigner)
 
@@ -10,11 +10,20 @@ This project is a [_fastlane_](https://github.com/fastlane/fastlane) plugin. To 
 fastlane add_plugin appsigner
 ```
 
-## About appsigner
+## About AppSigner
 
 AppSigner
+Plugin for easier sign apk/aab file by AppSigner 
 
-**Note to author:** Add a more detailed description about this plugin here. If your plugin contains multiple actions, make sure to mention them here.
+## Options
+
+| Key         | Description               | Env Var               | Default      |
+|-------------|---------------------------|-----------------------|--------------|
+| domain      | AppSigner domain          | APPSIGNER_DOMAIN      |              |
+| secret_key  | Secret key from AppSigner | APPSIGNER_SECRET_KEY  |              |
+| input_file  | The path to apk/aab       | APPSIGNER_INPUT_FILE  |              |
+| output_file | Path for output           | APPSIGNER_OUTPUT_FILE | `input_file` |
+
 
 ## Example
 

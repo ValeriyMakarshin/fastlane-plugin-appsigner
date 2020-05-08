@@ -8,11 +8,11 @@ module Fastlane
 
         header = {
             'X-SIGNER-SECRET': params[:secret_key],
-            'Content-Disposition': 'inline; filename="%s"' % File.basename(params[:apk_path]),
+            'Content-Disposition': 'inline; filename="%s"' % File.basename(params[:input_file]),
             'Content-Type': 'application/octet-stream'
         }
         request = Net::HTTP::Post.new(uri.request_uri, header)
-        request.body = File.read(params[:apk_path])
+        request.body = File.read(params[:input_file])
         response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
           http.request(request)
         end
@@ -21,7 +21,8 @@ module Fastlane
           print("response.body = %s\n" % response.body)
           raise response.error!
         end
-        open(params[:apk_path], "wb") do |file|
+        output_file = params[:output_file] || params[:input_file]
+        open(output_file, "wb") do |file|
           file.write(response.body)
         end
       end
@@ -56,13 +57,21 @@ module Fastlane
                                          verify_block: proc do |value|
                                            UI.user_error!("No secret_key") if value.to_s.length == 0
                                          end),
-            FastlaneCore::ConfigItem.new(key: :apk_path,
-                                         env_name: "APPSIGNER_APK_PATH",
-                                         description: "The path to your apk for sign",
+            FastlaneCore::ConfigItem.new(key: :input_file,
+                                         env_name: "APPSIGNER_INPUT_FILE",
+                                         description: "The path to your apk/aab for sign",
                                          optional: false,
                                          type: String,
                                          verify_block: proc do |value|
-                                           UI.user_error!("No apk_path") if value.to_s.length == 0
+                                           UI.user_error!("No input_file") if value.to_s.length == 0
+                                         end),
+            FastlaneCore::ConfigItem.new(key: :output_file,
+                                         env_name: "APPSIGNER_OUTPUT_FILE",
+                                         description: "Output apk/aab file. If you don't specify params, the plugin will override input file",
+                                         optional: true,
+                                         type: String,
+                                         verify_block: proc do |value|
+                                           UI.user_error!("No output_file") if value.to_s.length == 0
                                          end)
         ]
       end
