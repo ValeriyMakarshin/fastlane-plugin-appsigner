@@ -4,7 +4,7 @@ module Fastlane
       def self.run(params)
         require 'net/http'
         require 'uri'
-        uri = URI.parse('%s/api/v1/app/sign/' % params[:domain])
+        uri = URI.parse("#{params[:domain]}/api/v1/app/sign/")
 
         header = {
             'X-SIGNER-SECRET': params[:secret_key],
@@ -18,13 +18,12 @@ module Fastlane
         end
 
         unless response.kind_of? Net::HTTPSuccess
-          print("response.body = %s\n" % response.body)
+          UI.error "response.body = %s\n" % response.body
           raise response.error!
         end
         output_file = params[:output_file] || params[:input_file]
-        open(output_file, "wb") do |file|
-          file.write(response.body)
-        end
+        File.write(output_file, response.body)
+        UI.success 'Signature completed successfully'
       end
 
       def self.description
